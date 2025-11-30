@@ -1,0 +1,713 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Trophy, 
+  Search, 
+  ArrowLeft, 
+  Globe, 
+  MapPin, 
+  Award, 
+  Briefcase, 
+  ChevronRight,
+  Terminal,
+  Cpu,
+  BarChart3,
+  Network
+} from 'lucide-react';
+
+// --- Data Extraction ---
+const companiesData = [
+  // Diamond Level
+  {
+    id: 'accenture',
+    name: 'Accenture',
+    level: 'Diamond',
+    levelColor: 'bg-cyan-900/30 text-cyan-300 border-cyan-800',
+    description: 'Accenture is a leading global professional services company, providing a broad range of services in strategy and consulting, interactive, technology and operations, with digital capabilities across all of these services. We combine unmatched experience and specialized capabilities across more than 40 industries.',
+    active: true
+  },
+  {
+    id: 'ibm-consulting',
+    name: 'IBM Consulting',
+    level: 'Diamond',
+    levelColor: 'bg-cyan-900/30 text-cyan-300 border-cyan-800',
+    description: 'A global leader in AI and hybrid cloud consulting. (Profile inactive in source data, generic description applied).',
+    active: false
+  },
+  {
+    id: 'mckinsey',
+    name: 'McKinsey & Company',
+    level: 'Diamond',
+    levelColor: 'bg-cyan-900/30 text-cyan-300 border-cyan-800',
+    description: 'Since 1957, we have helped the region unlock growth and development, build champions in major industries, and nurture the talent of the next generation. The work of all seven of our locations—Abu Dhabi, Cairo, Doha, Dubai, Karachi, Manama, and Riyadh—is underpinned by global expertise.',
+    active: true
+  },
+  {
+    id: 'bcg',
+    name: 'Boston Consulting Group',
+    level: 'Diamond',
+    levelColor: 'bg-cyan-900/30 text-cyan-300 border-cyan-800',
+    description: 'A global management consulting firm and the worlds leading advisor on business strategy. (Profile inactive in source data).',
+    active: false
+  },
+  {
+    id: 'strategy-and',
+    name: 'Strategy&',
+    level: 'Diamond',
+    levelColor: 'bg-cyan-900/30 text-cyan-300 border-cyan-800',
+    description: 'Strategy& is a global strategy consulting business uniquely positioned to help deliver your best future: one that is built on differentiation from the inside out and tailored exactly to you. As part of PwC, we’re building the winning systems that are at the heart of growth.',
+    active: true
+  },
+  {
+    id: 'bain',
+    name: 'Bain & Company',
+    level: 'Diamond',
+    levelColor: 'bg-cyan-900/30 text-cyan-300 border-cyan-800',
+    description: 'Bain & Company is a global consultancy that helps the world’s most ambitious change makers define the future. Over the past two decades, Bain Middle East has developed a powerful track record while working with clients region-wide.',
+    active: true
+  },
+  
+  // Platinum Level
+  {
+    id: 'deloitte',
+    name: 'Deloitte',
+    level: 'Platinum',
+    levelColor: 'bg-slate-800 text-slate-300 border-slate-700',
+    description: 'Deloitte Middle East provides audit and assurance, tax and legal and consulting related services through 26 offices in 15 countries with more than 7,000 partners, directors and staff. With over 175 years of experience, we have worked with leaders globally.',
+    active: true
+  },
+  {
+    id: 'pwc',
+    name: 'PwC',
+    level: 'Platinum',
+    levelColor: 'bg-slate-800 text-slate-300 border-slate-700',
+    description: 'At PwC, our purpose is to build trust in society and solve important problems. We’re a network of firms in 152 countries with nearly 328,000 people who are committed to delivering quality in assurance, advisory and tax services.',
+    active: true
+  },
+  {
+    id: 'oliver-wyman',
+    name: 'Oliver Wyman',
+    level: 'Platinum',
+    levelColor: 'bg-slate-800 text-slate-300 border-slate-700',
+    description: 'Oliver Wyman is a global leader in management consulting. With offices in over 70 cities across 30 countries, we combine deep industry knowledge with specialized expertise in strategy, operations, risk management, and organization transformation.',
+    active: true
+  },
+  {
+    id: 'kearney',
+    name: 'Kearney',
+    level: 'Platinum',
+    levelColor: 'bg-slate-800 text-slate-300 border-slate-700',
+    description: 'Since 1926, Kearney has been a leading management consulting firm and trusted partner to three-quarters of the Fortune Global 500 and governments around the world. We work impact first, tackling big problems.',
+    active: true
+  },
+  {
+    id: 'kpmg',
+    name: 'KPMG',
+    level: 'Platinum',
+    levelColor: 'bg-slate-800 text-slate-300 border-slate-700',
+    description: 'KPMG’s global network of professional member firms includes approximately 227,000 professionals in over 140 countries. KPMG was the first major firm of its kind to organize itself along industry lines.',
+    active: true
+  },
+  {
+    id: 'roland-berger',
+    name: 'Roland Berger',
+    level: 'Platinum',
+    levelColor: 'bg-slate-800 text-slate-300 border-slate-700',
+    description: 'Roland Berger is the only management consultancy of European heritage with a strong international footprint. As an independent firm, solely owned by our Partners, we operate 52 offices in all major markets.',
+    active: true
+  },
+  {
+    id: 'adl',
+    name: 'Arthur D. Little',
+    level: 'Platinum',
+    levelColor: 'bg-slate-800 text-slate-300 border-slate-700',
+    description: 'At Arthur D. Little (ADL) we dare to be different. As the world’s first management consulting company, blazing trails is in our DNA. Since our establishment in 1886 by MIT chemist, Arthur Dehon Little, we have been at the forefront of global firsts.',
+    active: true
+  },
+  {
+    id: 'publicis-sapient',
+    name: 'Publicis Sapient',
+    level: 'Platinum',
+    levelColor: 'bg-slate-800 text-slate-300 border-slate-700',
+    description: 'Publicis Sapient is a digital business transformation company. We partner with global organizations to help them create and sustain competitive advantage in a world that is increasingly digital.',
+    active: true
+  },
+
+  // Gold Level
+  {
+    id: 'capgemini',
+    name: 'Capgemini',
+    level: 'Gold',
+    levelColor: 'bg-yellow-900/30 text-yellow-500 border-yellow-800',
+    description: 'A global leader in partnering with companies to transform and manage their business by harnessing the power of technology. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'artefact',
+    name: 'Artefact',
+    level: 'Gold',
+    levelColor: 'bg-yellow-900/30 text-yellow-500 border-yellow-800',
+    description: 'Data consulting and digital marketing agency. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'cognizant',
+    name: 'Cognizant',
+    level: 'Gold',
+    levelColor: 'bg-yellow-900/30 text-yellow-500 border-yellow-800',
+    description: 'Professional services company, transforming clients business, operating and technology models. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'elm',
+    name: 'Elm',
+    level: 'Gold',
+    levelColor: 'bg-yellow-900/30 text-yellow-500 border-yellow-800',
+    description: 'We offer a wide range of ready-made and customized digital solutions in many areas. By availing of our diverse and flexible business models, we ensure providing products that are seemingly tailored to customers needs.',
+    active: true
+  },
+  {
+    id: 'sia',
+    name: 'Sia Partners',
+    level: 'Gold',
+    levelColor: 'bg-yellow-900/30 text-yellow-500 border-yellow-800',
+    description: 'A pioneer of Consulting 4.0, Sia Partners comprises 2,400+ consultants with diverse expertise and operates from 38 offices worldwide; spanning across Asia, North Africa, and North America.',
+    active: true
+  },
+  {
+    id: 'site',
+    name: 'SITE Advisory',
+    level: 'Gold',
+    levelColor: 'bg-yellow-900/30 text-yellow-500 border-yellow-800',
+    description: 'We are established for enriching local content in designing, developing, and operating secure digital computing environments through Saudi talents, by fulfilling our role as a premier consultant.',
+    active: true
+  },
+  {
+    id: 'atos',
+    name: 'Atos',
+    level: 'Gold',
+    levelColor: 'bg-yellow-900/30 text-yellow-500 border-yellow-800',
+    description: 'Global leader in digital transformation. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'tcs',
+    name: 'Tata Consultancy Services',
+    level: 'Gold',
+    levelColor: 'bg-yellow-900/30 text-yellow-500 border-yellow-800',
+    description: 'IT services, consulting and business solutions organization. (Profile inactive in source).',
+    active: false
+  },
+
+  // Silver Level
+  {
+    id: 'devoteam',
+    name: 'Devoteam',
+    level: 'Silver',
+    levelColor: 'bg-slate-700/50 text-slate-400 border-slate-600',
+    description: 'Devoteam is a leading consulting firm focused on digital strategy, tech platforms, and cybersecurity. By combining creativity, tech, and data insights, we empower our customers to transform.',
+    active: true
+  },
+  {
+    id: 'ntt-data',
+    name: 'NTT Data',
+    level: 'Silver',
+    levelColor: 'bg-slate-700/50 text-slate-400 border-slate-600',
+    description: 'Global innovator in IT and business services. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'dxc',
+    name: 'DXC Technology',
+    level: 'Silver',
+    levelColor: 'bg-slate-700/50 text-slate-400 border-slate-600',
+    description: 'IT services and consulting. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'kinetic',
+    name: 'Kinetic Consulting',
+    level: 'Silver',
+    levelColor: 'bg-slate-700/50 text-slate-400 border-slate-600',
+    description: 'Kinetic Consulting is a premier boutique Strategy, CX, & Digital Transformation consultancy based in Dubai and Sydney. Our experienced team of management consultants is enabled by leading AI technologies.',
+    active: true
+  },
+  {
+    id: 'infosys',
+    name: 'Infosys',
+    level: 'Silver',
+    levelColor: 'bg-slate-700/50 text-slate-400 border-slate-600',
+    description: 'Global leader in next-generation digital services and consulting. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'wipro',
+    name: 'Wipro',
+    level: 'Silver',
+    levelColor: 'bg-slate-700/50 text-slate-400 border-slate-600',
+    description: 'Leading global information technology, consulting and business process services company. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'platform01',
+    name: 'Platform01 Consulting',
+    level: 'Silver',
+    levelColor: 'bg-slate-700/50 text-slate-400 border-slate-600',
+    description: 'Management consulting. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'maven',
+    name: 'Maven Insights',
+    level: 'Silver',
+    levelColor: 'bg-slate-700/50 text-slate-400 border-slate-600',
+    description: 'We are a regional boutique management consulting firm with offices located in Dubai and Riyadh. Our management team has decades of combined expertise in developing capabilities for growing and retaining a loyal customer base.',
+    active: true
+  },
+
+  // Bronze Level
+  {
+    id: 'hcl',
+    name: 'HCLTech',
+    level: 'Bronze',
+    levelColor: 'bg-orange-900/30 text-orange-400 border-orange-800',
+    description: 'Global technology company. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'siemens',
+    name: 'Siemens Advanta',
+    level: 'Bronze',
+    levelColor: 'bg-orange-900/30 text-orange-400 border-orange-800',
+    description: 'Strategic consulting and IoT solutions. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'dogma',
+    name: 'Dogma Alares',
+    level: 'Bronze',
+    levelColor: 'bg-orange-900/30 text-orange-400 border-orange-800',
+    description: 'Dogma Alares is a next-generation strategy consulting firm. The Dogma Alares team is composed of strategy consultants, machine learning engineers, service designers, and full-stack digital application developers.',
+    active: true
+  },
+  {
+    id: 'fractal',
+    name: 'Fractal',
+    level: 'Bronze',
+    levelColor: 'bg-orange-900/30 text-orange-400 border-orange-800',
+    description: 'Artificial intelligence and analytics. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'sopra',
+    name: 'Sopra Steria',
+    level: 'Bronze',
+    levelColor: 'bg-orange-900/30 text-orange-400 border-orange-800',
+    description: 'European leader in consulting, digital services and software development. (Profile inactive in source).',
+    active: false
+  },
+  {
+    id: 'metyis',
+    name: 'Metyis',
+    level: 'Bronze',
+    levelColor: 'bg-orange-900/30 text-orange-400 border-orange-800',
+    description: 'Global strategy and execution firm. (Profile inactive in source).',
+    active: false
+  }
+];
+
+// --- Components ---
+
+const Navigation = ({ setCurrentView }) => (
+  <nav className="bg-slate-950 border-b border-slate-800 shadow-xl sticky top-0 z-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex items-center justify-between h-20">
+        <div 
+          className="flex items-center cursor-pointer group" 
+          onClick={() => setCurrentView('home')}
+        >
+          <div className="bg-blue-600 p-2.5 rounded-lg mr-3 shadow-[0_0_15px_rgba(37,99,235,0.5)] group-hover:shadow-[0_0_25px_rgba(37,99,235,0.7)] transition-all">
+            <Terminal className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-bold text-xl tracking-tight text-white font-mono">
+              DECODING
+            </span>
+            <span className="text-xs font-semibold tracking-[0.2em] text-blue-400">DATA SCIENCE</span>
+          </div>
+        </div>
+        <div className="hidden md:block">
+          <div className="ml-10 flex items-baseline space-x-6">
+            <button onClick={() => setCurrentView('home')} className="text-slate-300 hover:text-white hover:bg-slate-800 px-4 py-2 rounded-md text-sm font-medium transition-all">Rankings</button>
+            <button className="text-slate-300 hover:text-white hover:bg-slate-800 px-4 py-2 rounded-md text-sm font-medium transition-all">Academy</button>
+            <button className="text-slate-300 hover:text-white hover:bg-slate-800 px-4 py-2 rounded-md text-sm font-medium transition-all">Projects</button>
+            <button className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-md text-sm font-bold shadow-lg shadow-blue-900/20 hover:shadow-blue-600/30 transition-all border border-blue-500">
+              Join Community
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+);
+
+const Footer = () => (
+  <footer className="bg-slate-950 border-t border-slate-800 text-slate-400 py-16">
+    <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+      <div className="col-span-1 md:col-span-1">
+        <div className="flex items-center mb-6">
+          <Terminal className="h-6 w-6 text-blue-500 mr-2" />
+          <span className="text-white font-bold font-mono">DECODING DATA SCIENCE</span>
+        </div>
+        <p className="text-sm leading-relaxed text-slate-500">
+          Empowering the next generation of AI leaders through data-driven insights, community collaboration, and expert consultancy in the Middle East and beyond.
+        </p>
+      </div>
+      
+      <div>
+        <h4 className="text-white font-bold mb-6 tracking-wide text-sm uppercase">Rankings</h4>
+        <ul className="space-y-3 text-sm">
+          <li className="hover:text-blue-400 cursor-pointer transition-colors">Diamond Tier Firms</li>
+          <li className="hover:text-blue-400 cursor-pointer transition-colors">Platinum Tier Firms</li>
+          <li className="hover:text-blue-400 cursor-pointer transition-colors">Gold Tier Firms</li>
+          <li className="hover:text-blue-400 cursor-pointer transition-colors">Silver Tier Firms</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 className="text-white font-bold mb-6 tracking-wide text-sm uppercase">Ecosystem</h4>
+        <ul className="space-y-3 text-sm">
+          <li className="hover:text-blue-400 cursor-pointer transition-colors">DDS Academy</li>
+          <li className="hover:text-blue-400 cursor-pointer transition-colors">Mentorship Program</li>
+          <li className="hover:text-blue-400 cursor-pointer transition-colors">Corporate Training</li>
+          <li className="hover:text-blue-400 cursor-pointer transition-colors">Events & Webinars</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 className="text-white font-bold mb-6 tracking-wide text-sm uppercase">Newsletter</h4>
+        <p className="text-sm mb-4 text-slate-500">Stay ahead of the curve with our weekly AI intelligence briefing.</p>
+        <div className="flex">
+          <input 
+            type="email" 
+            placeholder="Enter your email" 
+            className="bg-slate-900 border border-slate-700 rounded-l px-4 py-2.5 w-full text-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm placeholder-slate-600" 
+          />
+          <button className="bg-blue-600 text-white px-5 rounded-r hover:bg-blue-500 font-medium transition-colors">
+            Join
+          </button>
+        </div>
+      </div>
+    </div>
+    <div className="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-slate-900 text-center text-sm text-slate-600">
+      © 2025 Decoding Data Science. All rights reserved. Built for the Community.
+    </div>
+  </footer>
+);
+
+const CompanyCard = ({ company, onClick }) => (
+  <div 
+    onClick={() => onClick(company)}
+    className="group bg-slate-900 rounded-xl hover:shadow-[0_0_30px_rgba(37,99,235,0.15)] transition-all duration-300 border border-slate-800 hover:border-blue-500/50 overflow-hidden cursor-pointer flex flex-col h-full relative"
+  >
+    {/* Tech pattern overlay */}
+    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+      <Cpu className="h-12 w-12 text-blue-500" />
+    </div>
+
+    <div className={`h-1 w-full ${company.level === 'Diamond' ? 'bg-gradient-to-r from-blue-400 to-cyan-300' : 'bg-slate-700'}`}></div>
+    
+    <div className="p-6 flex-grow relative z-10">
+      <div className="flex justify-between items-start mb-4">
+        <div className={`text-xs font-bold px-3 py-1 rounded-md border ${company.levelColor} uppercase tracking-wider`}>
+          {company.level}
+        </div>
+        {company.active && <span className="flex h-2.5 w-2.5 relative">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+        </span>}
+      </div>
+      
+      <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors">
+        {company.name}
+      </h3>
+      
+      <p className="text-slate-400 text-sm line-clamp-3 mb-4 leading-relaxed">
+        {company.description}
+      </p>
+    </div>
+    
+    <div className="px-6 py-4 bg-slate-950/50 border-t border-slate-800 flex justify-between items-center group-hover:bg-slate-900/80 transition-colors">
+      <span className="text-xs font-bold text-slate-500 uppercase tracking-widest group-hover:text-blue-400 transition-colors">Analyze Profile</span>
+      <ChevronRight className="h-4 w-4 text-slate-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
+    </div>
+  </div>
+);
+
+const DetailView = ({ company, onBack }) => {
+  const stats = [
+    { label: 'AI Projects', value: '150+' },
+    { label: 'Data Experts', value: '2.5k' },
+    { label: 'Regional Hubs', value: '12' },
+    { label: 'Impact Score', value: '9.8' },
+  ];
+
+  return (
+    <div className="animate-fade-in min-h-screen bg-slate-950">
+      {/* Header Banner */}
+      <div className="bg-slate-900 border-b border-slate-800 pb-24 pt-12 relative overflow-hidden">
+        {/* Abstract Background */}
+        <div className="absolute inset-0 opacity-10">
+           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900 via-slate-950 to-slate-950"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <button 
+            onClick={onBack}
+            className="flex items-center text-slate-400 hover:text-white mb-8 transition-colors group"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Return to Matrix
+          </button>
+          
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end">
+            <div>
+              <div className={`inline-flex items-center space-x-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-widest mb-4 border ${company.levelColor}`}>
+                 <Award className="h-3 w-3" />
+                 <span>{company.level} Partner</span>
+              </div>
+              <h1 className="text-4xl md:text-6xl font-extrabold mb-4 text-white tracking-tight">{company.name}</h1>
+              <div className="flex items-center space-x-6 text-slate-400 text-sm font-mono">
+                <span className="flex items-center"><MapPin className="h-4 w-4 mr-2 text-blue-500" /> Dubai HQ</span>
+                <span className="flex items-center"><Globe className="h-4 w-4 mr-2 text-blue-500" /> Global Network</span>
+              </div>
+            </div>
+            
+            <button className="mt-8 md:mt-0 bg-white text-slate-950 px-8 py-3 rounded-md font-bold hover:bg-blue-50 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center">
+              <Network className="h-4 w-4 mr-2" />
+              Connect
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* Left Column: Main Info */}
+          <div className="lg:col-span-2 space-y-8">
+            <div className="bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-800 p-8 shadow-2xl">
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <Terminal className="h-6 w-6 text-blue-500 mr-3" />
+                Intelligence Profile
+              </h2>
+              <p className="text-slate-300 leading-relaxed text-lg mb-6 font-light">
+                {company.description}
+              </p>
+              <div className="bg-slate-950/50 p-6 rounded-lg border border-slate-800">
+                <p className="text-slate-400 leading-relaxed">
+                  <span className="text-blue-400 font-bold">Analyst Note:</span> As a leader in the {company.level} category, {company.name} implements high-impact Generative AI solutions. Their regional team combines global best practices with deep local market understanding.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-800 p-8 shadow-2xl">
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+                <Cpu className="h-6 w-6 text-blue-500 mr-3" />
+                Core Competencies
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {['Generative AI Strategy', 'LLM Fine-tuning', 'Data Governance', 'AI Workforce Upskilling', 'Predictive Modeling', 'Computer Vision'].map((cap, idx) => (
+                  <div key={idx} className="flex items-center p-4 bg-slate-950 rounded-lg border border-slate-800 hover:border-blue-500/30 transition-colors group">
+                    <div className="bg-blue-900/20 p-2 rounded-md mr-3 group-hover:bg-blue-600/20 transition-colors">
+                      <BarChart3 className="h-4 w-4 text-blue-400" />
+                    </div>
+                    <span className="text-slate-300 font-medium">{cap}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Sidebar */}
+          <div className="space-y-8">
+            {/* Quick Stats */}
+            <div className="bg-slate-900/80 backdrop-blur-sm rounded-xl border border-slate-800 p-6 shadow-2xl">
+              <h3 className="text-lg font-bold text-white mb-6 border-b border-slate-800 pb-4">Key Metrics</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {stats.map((stat, idx) => (
+                  <div key={idx} className="text-center p-4 bg-slate-950 rounded-lg border border-slate-800">
+                    <div className="text-2xl font-bold text-blue-400 font-mono">{stat.value}</div>
+                    <div className="text-xs text-slate-500 uppercase tracking-wider mt-1">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Contact Card */}
+            <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl shadow-lg p-6 text-white relative overflow-hidden">
+               <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl"></div>
+              <h3 className="text-lg font-bold mb-4 relative z-10">Partner with {company.name}</h3>
+              <p className="text-blue-100 text-sm mb-6 relative z-10">
+                Ready to deploy enterprise AI solutions? Initiate a consultation with the regional strategy team.
+              </p>
+              <button className="w-full bg-white text-blue-700 font-bold py-3 px-4 rounded hover:bg-blue-50 transition-colors flex items-center justify-center relative z-10 shadow-lg">
+                <Briefcase className="h-4 w-4 mr-2" />
+                Request Briefing
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div className="h-24"></div>
+    </div>
+  );
+};
+
+const HomePage = ({ companies, onCompanyClick }) => {
+  const [filter, setFilter] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const levels = ['All', 'Diamond', 'Platinum', 'Gold', 'Silver', 'Bronze'];
+
+  const filteredCompanies = companies.filter(c => {
+    const matchesFilter = filter === 'All' || c.level === filter;
+    const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+  return (
+    <div className="min-h-screen bg-slate-950 pb-20 relative">
+      {/* Background decoration */}
+      <div className="absolute top-0 left-0 w-full h-96 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 pointer-events-none"></div>
+
+      {/* Hero Section */}
+      <div className="border-b border-slate-800 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 text-center">
+          <div className="inline-flex items-center space-x-2 bg-blue-900/30 border border-blue-500/30 rounded-full px-4 py-1.5 mb-8">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+            <span className="text-blue-300 text-xs font-bold uppercase tracking-widest">2025 AI Ecosystem Report</span>
+          </div>
+          
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6">
+            Decoding the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Top AI Firms</span>
+          </h1>
+          
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            The definitive intelligence directory for Artificial Intelligence & Gen AI consulting leaders in the Middle East.
+          </p>
+          
+          {/* Search Bar */}
+          <div className="max-w-xl mx-auto relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-slate-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search database (e.g., Strategy&, BCG...)"
+                className="block w-full pl-11 pr-4 py-4 bg-slate-900 border border-slate-700 rounded-lg leading-5 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent sm:text-sm shadow-xl transition-all"
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {levels.map((level) => (
+            <button
+              key={level}
+              onClick={() => setFilter(level)}
+              className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border ${
+                filter === level
+                  ? 'bg-white text-slate-900 border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]'
+                  : 'bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-600 hover:text-white'
+              }`}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
+
+        {/* Results Count */}
+        <div className="flex items-center justify-between mb-8 border-b border-slate-800 pb-4">
+          <h2 className="text-xl font-bold text-white flex items-center">
+            <Terminal className="h-5 w-5 mr-2 text-blue-500" />
+            {filter === 'All' ? 'Complete Registry' : `${filter} Tier Firms`}
+          </h2>
+          <span className="text-slate-400 text-xs font-mono bg-slate-900 border border-slate-800 px-3 py-1 rounded-md">
+            {filteredCompanies.length} RECORDS FOUND
+          </span>
+        </div>
+
+        {/* Grid */}
+        {filteredCompanies.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredCompanies.map((company) => (
+              <CompanyCard 
+                key={company.id} 
+                company={company} 
+                onClick={onCompanyClick} 
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-24 bg-slate-900/50 rounded-xl border border-dashed border-slate-800">
+            <Trophy className="mx-auto h-16 w-16 text-slate-700 mb-4" />
+            <h3 className="text-xl font-bold text-white mb-2">No data matches found</h3>
+            <p className="text-slate-500">Recalibrate search parameters or clear filters.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default function App() {
+  const [currentView, setCurrentView] = useState('home');
+  const [selectedCompany, setSelectedCompany] = useState(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentView]);
+
+  const handleCompanyClick = (company) => {
+    setSelectedCompany(company);
+    setCurrentView('detail');
+  };
+
+  const handleBack = () => {
+    setCurrentView('home');
+    setSelectedCompany(null);
+  };
+
+  return (
+    <div className="font-sans text-slate-200 bg-slate-950 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
+      <Navigation setCurrentView={setCurrentView} />
+      
+      <main className="flex-grow">
+        {currentView === 'home' ? (
+          <HomePage 
+            companies={companiesData} 
+            onCompanyClick={handleCompanyClick} 
+          />
+        ) : (
+          <DetailView 
+            company={selectedCompany} 
+            onBack={handleBack} 
+          />
+        )}
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
